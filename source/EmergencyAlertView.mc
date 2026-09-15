@@ -57,9 +57,13 @@ class EmergencyAlertView extends WatchUi.View {
     function triggerEmergency(heartRate as Lang.Number) as Void {
         // Trigger local hardware feedback (Vibration and Beep)
         if (Toybox has :Attention) {
-            var vibeProfile = [new Attention.VibeProfile(100, 1000)] as Lang.Array<Attention.VibeProfile>;
-            Attention.vibrate(vibeProfile);
-            Attention.playTone(Attention.TONE_LOUD_BEEP);
+            if (Attention has :vibrate) {
+                var vibeProfile = [new Attention.VibeProfile(100, 1000)] as Lang.Array<Attention.VibeProfile>;
+                Attention.vibrate(vibeProfile);
+            }
+            if (Attention has :playTone) {
+                Attention.playTone(Attention.TONE_LOUD_BEEP);
+            }
         }
 
         // Dispatch the network call
