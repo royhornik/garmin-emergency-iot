@@ -31,7 +31,7 @@ class EmergencyAlertView extends WatchUi.View {
         
         // Integration Test Hook: Inject mock data if testing
         if (IS_TEST_MODE && (heartRate == null || heartRate < 100)) {
-            \\heartRate = 175; 
+            //heartRate = 175; 
         }
         
         if (heartRate != null) {
