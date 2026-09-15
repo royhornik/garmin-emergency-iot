@@ -68,7 +68,7 @@ class EmergencyAlertView extends WatchUi.View {
 
     function makeEmergencyCall(heartRate as Lang.Number) as Void {
         // WARNING: Replace this URL with your current active ngrok forwarding address if it changed
-        var url = "https://stir-nape-acorn.ngrok-free.dev/alert"; 
+        var url = "https://YOUR_NGROK_SUBDOMAIN.ngrok-free.dev/alert"; 
         
         var params = {
             "heartRate" => heartRate
