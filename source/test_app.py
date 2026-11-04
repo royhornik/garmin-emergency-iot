@@ -12,27 +12,28 @@ class EmergencyAlertTests(unittest.TestCase):
 
     @patch('app.client.calls.create')  # Mocks the actual Twilio API call to prevent making real phone calls
     def test_high_heart_rate_triggers_alert(self, mock_twilio_call):
-        """Test that an abnormally high heart rate triggers the emergency logic and returns 200 OK."""
+        """An alert from the watch places exactly one call, and the call says the real heart rate."""
         # Simulate an incoming HTTP POST request from the watch with high HR data
         response = self.app.post('/alert', json={'heartRate': 175})
-        
+
         # Assert that the server responds with a 200 SUCCESS status code
         self.assertEqual(response.status_code, 200)
-        
+
         # Assert that the Twilio API integration was triggered exactly once
         mock_twilio_call.assert_called_once()
 
+        # Assert that the spoken message contains the heart rate that was sent
+        # (this check would have caught the "hr" / "heartRate" key mismatch)
+        self.assertIn('175', mock_twilio_call.call_args.kwargs['twiml'])
+
     @patch('app.client.calls.create')
-    def test_normal_heart_rate_does_not_trigger_alert(self, mock_twilio_call):
-        """Test that a normal heart rate does not trigger any outbound VoIP/telephony alerts."""
-        # Simulate an incoming HTTP POST request with safe, baseline HR data
+    def test_server_forwards_every_alert_it_receives(self, mock_twilio_call):
+        """The 170 / 40 thresholds are checked on the watch. The server trusts the watch
+        and places a call for every alert it receives."""
         response = self.app.post('/alert', json={'heartRate': 75})
-        
-        # Assert that the server processes the request successfully with a 200 OK
+
         self.assertEqual(response.status_code, 200)
-        
-        # Assert that the Twilio outbound call was NOT invoked
-        mock_twilio_call.assert_not_called()
+        mock_twilio_call.assert_called_once()
 
 if __name__ == '__main__':
     unittest.main()
