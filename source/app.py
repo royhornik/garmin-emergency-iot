@@ -19,7 +19,7 @@ def handle_emergency():
     data = request.json
     print("\n[ALERT] Garmin watch detected anomaly. Triggering Twilio API...")
     
-    heart_rate = data.get("hr", "Unknown")
+    heart_rate = data.get("heartRate", "Unknown")
     
     # Trigger an automated Voice Call
     try:
